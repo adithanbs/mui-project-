@@ -12,7 +12,9 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { useState } from 'react';
 import { AccountCircle, Visibility, VisibilityOff } from '@mui/icons-material';
-import { SignIn } from '../../components/auth/auth';
+import { toast } from 'react-toastify';
+import {SignIn,Authenticated,isAuthenticated} from '../../components/auth/auth'
+import Spinner from '../../components/loadingSpinner';
 
 const validationSchema = yup.object({
 
@@ -23,10 +25,10 @@ const validationSchema = yup.object({
     password: yup
         .string()
         .required('Please Enter your password')
-        // .matches(
-        //     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-        //     "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
-        // ),
+    // .matches(
+    //     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+    //     "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
+    // ),
 
 });
 
@@ -56,32 +58,47 @@ const LogIn = () => {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            console.log("values", values);
-            SignIn({name:"kminchelle",password:"0lelplR"})
-            .then(res => console.log("res",res))
-            .catch(err => console.log("err",err))    
+            //  console.log("values", values);
+            setLoader(true);
+            SignIn({ emailId: values.email, password: values.password })
+                .then((data) => {
+                    setLoader(false);
+                    if (data.error) {
+                        toast("Wow so easy !")
+                    }
+                    else {
+                        toast.error(data.err);
+                    }
+                }
+            )
+
+            .catch(error => 
+                {
+                setLoader(false)
+                console.log("err", error)
+            }
+                
+                )
+
         }
     });
 
     const classes = useStyles();
-    const [showPassword,setShowPassword] = useState(false)
-// useEffect(() => {
-// axios.get("http://10.100.127.90:8081/test/person").then((res) => {
-//     console.log("res",res.data);
-// })
-// axios.post("http://10.100.127.90:8081/login",{
-//     userName:"ravi",
-//     password:"Ravikumar123"
-// }).then((res) => {
-//         console.log("res",res.data);
-//     })
-
-// },[])
-
+    const [showPassword, setShowPassword] = useState(false)
+    const [loader,setLoader] =  useState(false)
+    
+     
+    
     return (
-        // <ThemeProvider theme={theme}>
+        <>
+        {/* // <ThemeProvider theme={theme}> */}
+
         <Container maxWidth="xs" className={classes.mainCon}>
             {/* <CssBaseline /> */}
+            {/* <Toster /> */}
+            {/* <button onClick={notify}>Notify !</button> */}
+          {  loader && <Spinner/>}
+
             <div className={classes.paper}>
                 <Avatar
                     className={classes.avatar}
@@ -93,6 +110,7 @@ const LogIn = () => {
                     component="form"
                     onSubmit={formik.handleSubmit}
                 >
+
                     <TextField
                         fullWidth
                         margin="normal"
@@ -105,34 +123,34 @@ const LogIn = () => {
                         error={Boolean(formik.errors.email)}
                         helperText={formik.touched.email && formik.errors.email}
                     />
-                    <TextField 
+                    <TextField
                         margin="normal"
                         fullWidth
                         id="password"
                         name='password'
                         label="Password"
-                        type={showPassword ? "text" : "Password"}               
+                        type={showPassword ? "text" : "Password"}
                         value={formik.values.password}
                         onChange={formik.handleChange}
                         error={Boolean(formik.errors.password)}
                         helperText={formik.touched.password && formik.errors.password}
                         InputProps={{
-                            endAdornment : (
+                            endAdornment: (
                                 <InputAdornment position="end">
-                                  <IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={() => setShowPassword(!showPassword)}
                                     // onMouseDown={handleMouseDownPassword}
-                                  >
-                                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                                  </IconButton>
-                                 
+                                    >
+                                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                                    </IconButton>
+
                                 </InputAdornment>
                             )
-                              }
+                        }
 
                         }
-                        
+
                     />
                     <Button
                         type="submit"
@@ -145,7 +163,9 @@ const LogIn = () => {
             </div>
 
         </Container>
-        // </ThemeProvider>
+        </>
+    // {/* </ThemeProvider> */}
+      
     )
 }
 

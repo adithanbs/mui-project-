@@ -1,3 +1,5 @@
+// require('dotenv').config()
+// const Dotenv = require('dotenv-webpack');
 import React from 'react';
 import Register from './pages/register'
 import { Provider } from 'react-redux';
@@ -14,7 +16,12 @@ import { Routes, Route } from "react-router-dom";
 import UserRoute from './routes/userRoute';
 import AdminRoute from './routes/adminRoute';
 import LogIn from './pages/logIn/LogIn';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+
+// import { ToastContainer, toast } from 'material-react-toastify';
+// import 'material-react-toastify/dist/ReactToastify.css';
 // const router = createBrowserRouter([
 //   {
 //     path: "/",
@@ -66,7 +73,7 @@ function App() {
         }/> */}
       
       </Routes>
-
+<ToastContainer/>
       </Provider> 
     </div>
   );
