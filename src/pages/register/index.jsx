@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import { Box, Container } from '@mui/system'
-import { Avatar, Button, Checkbox, FormControl, FormControlLabel, FormLabel, Grid, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from '@mui/material';
+import { Avatar, Button, Checkbox, FormControl, FormControlLabel, FormLabel, Grid, IconButton, InputAdornment, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import LockIcon from '@mui/icons-material/Lock';
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useDispatch, useSelector } from 'react-redux';
 import { setAuthValue } from '../../redux/slicers/auth';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import Spinner from '../../components/loadingSpinner';
+import { SignUp } from '../../auth/helper';
 
 const validationSchema = yup.object({
     firstName: yup
@@ -15,6 +18,10 @@ const validationSchema = yup.object({
         .required("First name is Require"),
     lastName: yup.string()
         .max(20, "Must be 20 characters or less")
+    // .required("Last name is Require")
+    ,
+    phoneNumber: yup.string()
+        .max(10, "Must be 20 characters or less")
         .required("Last name is Require"),
     email: yup
         .string("Enter your email")
@@ -27,12 +34,22 @@ const validationSchema = yup.object({
             /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
             "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
         ),
+    changepassword: yup.string().when("password", {
+        is: val => (val && val.length > 0 ? true : false),
+        then: yup.string().oneOf(
+            [yup.ref("password")],
+            "Both password need to be the same"
+        )
+    }),
     gender: yup.string().required("Please select you gender"),
-    userType: yup.string().required("Please select user Type"),
+    userType: yup.string()
+    // .required("Please select user Type")
+    ,
     checkBox: yup
         .boolean()
-        .required("Required")
-        .oneOf([true], "You must accept the terms and conditions."),
+    // .required("Required")
+    // .oneOf([true], "You must accept the terms and conditions.")
+    ,
 });
 
 
@@ -42,29 +59,60 @@ const Index = () => {
 
     const { auth } = useSelector(state => state);
     const dispatch = useDispatch()
-
+    const [showPassword, setShowPassword] = useState({
+        confirmPassword: false,
+        password: false
+    });
+    const [loader, setLoader] = useState(false);
     console.log("selector", auth);
     const formik = useFormik({
         initialValues: {
             firstName: "",
             lastName: "",
+            phoneNumber: "",
             email: "",
             password: "",
+            changepassword: "",
             gender: "",
             checkBox: false
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
+            setLoader(true)
+            SignUp({ name: values.firstName, gender: values.gender, emailId: values.email, password: values.changepassword, phoneNumber: values.phoneNumber, })
+                .then((data) => {
+                    if (!data.error) {
+                        setLoader(false)
+                    } else {
+                        setLoader(false)
+                    }
+                })
+                .catch((error) => console.log(error))
+
             console.log("values", values);
             dispatch(setAuthValue(values))
+
+
         }
     });
+
+    // const performRedirect = () => {
+    //    if(didRedirect){
+    //     if()
+    //    }
+    // }
+
 
     return (
         <>
 
             <ThemeProvider theme={theme}>
-                <Container maxWidth="xs">
+                {loader && <Spinner />}
+                <Container maxWidth="xs"
+                // style = {{
+                //     position: "absolute",top:0,left: 0,Zindex:2,pointerEvents: "none"
+                // }}
+                >
                     <Box sx={{ marginTop: 8, display: "flex", flexDirection: "column", alignItems: "center" }} >
                         <Avatar sx={{ bgcolor: 'secondary.main', m: 1 }}>
 
@@ -117,15 +165,77 @@ const Index = () => {
                                     <TextField
                                         // required
                                         fullWidth
+                                        id="phoneNumber"
+                                        label="Mobile Number"
+                                        name="phoneNumber"
+                                        autoComplete="email"
+                                        value={formik.values.phoneNumber}
+                                        onChange={formik.handleChange}
+                                        error={Boolean(formik.errors.phoneNumber)}
+                                        helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        // required
+                                        fullWidth
                                         name="password"
                                         label="Password"
-                                        type="password"
+                                        type={showPassword.password ? "text" : "Password"}
                                         id="password"
                                         autoComplete="new-password"
                                         value={formik.values.password}
                                         onChange={formik.handleChange}
                                         error={Boolean(formik.errors.password)}
                                         helperText={formik.touched.password && formik.errors.password}
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="toggle password visibility"
+                                                        onClick={() => setShowPassword({ ...showPassword, password: !showPassword.password })}
+                                                    // onMouseDown={handleMouseDownPassword}
+                                                    >
+                                                        {showPassword.password ? <Visibility /> : <VisibilityOff />}
+                                                    </IconButton>
+
+                                                </InputAdornment>
+                                            )
+                                        }
+
+                                        }
+                                    />
+
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        // required
+                                        fullWidth
+                                        name="changepassword"
+                                        label="Change Password"
+                                        type={showPassword.confirmPassword ? "text" : "Password"}
+                                        id="password"
+                                        autoComplete="new-password"
+                                        value={formik.values.changepassword}
+                                        onChange={formik.handleChange}
+                                        error={Boolean(formik.errors.changepassword)}
+                                        helperText={formik.touched.changepassword && formik.errors.changepassword}
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="toggle password visibility"
+                                                        onClick={() => setShowPassword({ ...showPassword, confirmPassword: !showPassword.confirmPassword })}
+                                                    // onMouseDown={handleMouseDownPassword}
+                                                    >
+                                                        {showPassword.confirmPassword ? <Visibility /> : <VisibilityOff />}
+                                                    </IconButton>
+
+                                                </InputAdornment>
+                                            )
+                                        }
+
+                                        }
                                     />
 
                                 </Grid>

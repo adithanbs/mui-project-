@@ -8,7 +8,13 @@
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
     /* background-color: ; */
-    }
+}
+.overlay-div {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100vh;
+}
 
     @keyframes rotation {
     0% {

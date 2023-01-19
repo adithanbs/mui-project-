@@ -13,7 +13,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { AccountCircle, Visibility, VisibilityOff } from '@mui/icons-material';
 import { toast } from 'react-toastify';
-import {SignIn,Authenticated,isAuthenticated} from '../../components/auth/auth'
+import {SignIn,Authenticated,isAuthenticated} from '../../auth/helper'
 import Spinner from '../../components/loadingSpinner';
 
 const validationSchema = yup.object({
