@@ -18,6 +18,10 @@ import AdminRoute from './routes/adminRoute';
 import LogIn from './pages/logIn/LogIn';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AdminDashboard from './pages/adminDashboard';
+import UserDashboard from './pages/userDashboard';
+import Error from './components/error-404';
+import UnAuthorized from './components/unauthorizedRoute';
 
 
 // import { ToastContainer, toast } from 'material-react-toastify';
@@ -50,30 +54,42 @@ function App() {
   return (
     <div className="App">
       <Provider store={store}>
-      {/* <RouterProvider router={router} /> */}
-      {/* <Register /> */}
+     
+
       <Routes>
-        <Route exact path='/'  element = {<Register />}/>
-        <Route path='/user-login'  element = {<LogIn />}/>
+
+{/* PUPLIC ROUTE   */}
+        <Route exact path='/sign-up'  element = {<Register />}/>
+        <Route path='/'  element = {<LogIn />}/>
+        <Route path='/unauthorized'  element = {<UnAuthorized />}/>
+     
+    
+{/* USER_ROUTE */} 
+
+        <Route  element = {<UserRoute/>}> 
+
+           <Route path='/user-dashboard'  element={<UserDashboard />} />
+
+        </Route>
+        
+
+
+
+ {/* ADMIN ROUTES */}
+ 
+        <Route   element = {<AdminRoute/>}>        
+           
+           <Route path='/admin-dashboard'  element={<AdminDashboard />} />
+
+        </Route>
+
+  {/* CATCH ROUTED       */}
+      <Route path='*'  element = {<Error/>}/>
+        
+      </Routes>
 
         
-        <Route path='/home'  element = {
-        <UserRoute>
-          <Home />
-          {/* <ViewProducts path='view-products'/> */}
-        </UserRoute>
-        }/>
-      
-      {/* <Route path='/home'  element = {
-        <AdminRoute>
-          <Home />
-          <AddProducts/>
-          <ViewProducts/>
-         </AdminRoute>
-        }/> */}
-      
-      </Routes>
-<ToastContainer/>
+        <ToastContainer/>
       </Provider> 
     </div>
   );

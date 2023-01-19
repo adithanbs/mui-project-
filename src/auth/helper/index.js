@@ -1,4 +1,5 @@
 import axios from 'axios'
+import jwt_decode from "jwt-decode";
 
 const BaseUrl = process.env.REACT_APP_BaseURL
 // console.log("baseUrl",process.env.REACT_APP_BaseURL);
@@ -18,10 +19,10 @@ export const SignIn = (data) => {
 
 }
 
-export const Authenticated = (data, next) => {
+export const Authenticated = (data) => {
     if (typeof window !== "undefined") {
         localStorage.setItem("jwt", JSON.stringify(data));    
-        next()
+        // next()
     }
 }
 
@@ -36,12 +37,12 @@ export const SignOut = next => {
     }
 }
 
-export const isAuthenticated = (data, next) => {
+export const isAuthenticated = () => {
     if(typeof window == "undefined") {
         return false;
     }
     if(localStorage.getItem("jwt")){
-        return JSON.parse(localStorage.getItem("jwt"));
+        return jwt_decode(localStorage.getItem("jwt"));
     }else{
         return false
     }

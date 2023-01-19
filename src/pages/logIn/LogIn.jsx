@@ -13,8 +13,12 @@ import axios from 'axios';
 import { useState } from 'react';
 import { AccountCircle, Visibility, VisibilityOff } from '@mui/icons-material';
 import { toast } from 'react-toastify';
-import {SignIn,Authenticated,isAuthenticated} from '../../auth/helper'
+import { SignIn, Authenticated, isAuthenticated } from '../../auth/helper'
 import Spinner from '../../components/loadingSpinner';
+import jwt_decode from "jwt-decode";
+import { Navigate, redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 const validationSchema = yup.object({
 
@@ -51,6 +55,30 @@ const useStyles = makeStyles((theme) => ({
 
 const LogIn = () => {
 
+
+
+
+
+
+
+    const classes = useStyles();
+    const [showPassword, setShowPassword] = useState(false)
+    const [loader, setLoader] = useState(false)
+
+    const navigate = useNavigate();
+
+    // const didRedirect = (userDatasToken) => {
+
+    //     let userDatas = jwt_decode(userDatasToken)
+    //     console.log("userDatas",userDatas.type);
+    //  if(userDatas?.type === "ADMIN"){
+    //     return <Navigate to="/admin-dashboard" />
+    //  }else{
+    //     return  <Navigate to="/user-dashboard" />
+    //  }
+    // }
+
+
     const formik = useFormik({
         initialValues: {
             email: "",
@@ -62,110 +90,117 @@ const LogIn = () => {
             setLoader(true);
             SignIn({ emailId: values.email, password: values.password })
                 .then((data) => {
+
                     setLoader(false);
-                    if (data.error) {
-                        toast("Wow so easy !")
+                    if (!data.data.error) {
+                        toast.success("Logged in Successfully")
+                    
+                        Authenticated(data.data.data.accessToken)
+                        console.log("isAuthenticated()",isAuthenticated());
+                        // didRedirect(isAuthenticated());
+                        if (isAuthenticated()?.type === "ADMIN") {
+                            // console.log(jwt_decode(data.data.data.accessToken))
+                             console.log("oooo",isAuthenticated()?.type );
+                            //  return <Navigate to="/admin-dashboard" replace />
+                             return navigate("/admin-dashboard");
+                          }else{
+                            return navigate("/user-dashboard");
+                          }
                     }
                     else {
-                        toast.error(data.err);
+                        toast.error("User Name and Password are not Matching");
+
                     }
                 }
-            )
+                )
 
-            .catch(error => 
-                {
-                setLoader(false)
-                console.log("err", error)
-            }
-                
+                .catch(error => {
+                    setLoader(false)
+                    console.log("err", error)
+                }
+
                 )
 
         }
     });
 
-    const classes = useStyles();
-    const [showPassword, setShowPassword] = useState(false)
-    const [loader,setLoader] =  useState(false)
-    
-     
-    
     return (
         <>
-        {/* // <ThemeProvider theme={theme}> */}
+            {/* // <ThemeProvider theme={theme}> */}
 
-        <Container maxWidth="xs" className={classes.mainCon}>
-            {/* <CssBaseline /> */}
-            {/* <Toster /> */}
-            {/* <button onClick={notify}>Notify !</button> */}
-          {  loader && <Spinner/>}
+            <Container maxWidth="xs" className={classes.mainCon}>
+                {/* <CssBaseline /> */}
+                {/* <Toster /> */}
+                {/* <button onClick={notify}>Notify !</button> */}
+                {loader && <Spinner />}
 
-            <div className={classes.paper}>
-                <Avatar
-                    className={classes.avatar}
-                >
-                </Avatar>
-                <Typography variant="h5" gutterBottom> Signin </Typography>
-                <Box
-                    className={classes.box}
-                    component="form"
-                    onSubmit={formik.handleSubmit}
-                >
+                <div className={classes.paper}>
+                    <Avatar
+                        className={classes.avatar}
+                    >
+                    </Avatar>
+                    <Typography variant="h5" gutterBottom> Signin </Typography>
+                    <Box
+                        className={classes.box}
+                        component="form"
+                        onSubmit={formik.handleSubmit}
+                    >
 
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Email"
-                        id="email"
-                        name="email"
-                        type={"email"}
-                        value={formik.values.email}
-                        onChange={formik.handleChange}
-                        error={Boolean(formik.errors.email)}
-                        helperText={formik.touched.email && formik.errors.email}
-                    />
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        id="password"
-                        name='password'
-                        label="Password"
-                        type={showPassword ? "text" : "Password"}
-                        value={formik.values.password}
-                        onChange={formik.handleChange}
-                        error={Boolean(formik.errors.password)}
-                        helperText={formik.touched.password && formik.errors.password}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                    // onMouseDown={handleMouseDownPassword}
-                                    >
-                                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                                    </IconButton>
+                        <TextField
+                            fullWidth
+                            margin="normal"
+                            label="Email"
+                            id="email"
+                            name="email"
+                            type={"email"}
+                            value={formik.values.email}
+                            onChange={formik.handleChange}
+                            error={Boolean(formik.errors.email)}
+                            helperText={formik.touched.email && formik.errors.email}
+                        />
+                        <TextField
+                            margin="normal"
+                            fullWidth
+                            id="password"
+                            name='password'
+                            label="Password"
+                            type={showPassword ? "text" : "Password"}
+                            value={formik.values.password}
+                            onChange={formik.handleChange}
+                            error={Boolean(formik.errors.password)}
+                            helperText={formik.touched.password && formik.errors.password}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                        // onMouseDown={handleMouseDownPassword}
+                                        >
+                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                        </IconButton>
 
-                                </InputAdornment>
-                            )
-                        }
+                                    </InputAdornment>
+                                )
+                            }
 
-                        }
+                            }
 
-                    />
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        fullWidth
-                        sx={{ mt: 3, mb: 2 }}
-                    >Sign In</Button>
-                </Box >
+                        />
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            fullWidth
+                            sx={{ mt: 3, mb: 2 }}
+                        >Sign In</Button>
+                    </Box >
 
-            </div>
+                </div>
 
-        </Container>
+            </Container>
         </>
-    // {/* </ThemeProvider> */}
-      
+        // {/* </ThemeProvider> */}
+
     )
 }
 
