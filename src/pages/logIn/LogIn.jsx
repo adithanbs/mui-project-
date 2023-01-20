@@ -1,25 +1,19 @@
 import React from 'react'
-// import { Avatar, CssBaseline } from '@mui/material';
-import { green, pink } from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
 import { Box, Container } from '@mui/system';
-// import { makeStyles } from '@material-ui/core/styles';
-import { Button, CssBaseline, IconButton, InputAdornment, OutlinedInput, TextField, Typography } from '@mui/material';
+import { Button, CssBaseline, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import { makeStyles } from "@material-ui/core/styles";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { useEffect } from 'react';
-import axios from 'axios';
 import { useState } from 'react';
-import { AccountCircle, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import { SignIn, Authenticated, isAuthenticated } from '../../auth/helper'
 import Spinner from '../../components/loadingSpinner';
-import jwt_decode from "jwt-decode";
-import { Navigate, redirect } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 
+// valitaction
 const validationSchema = yup.object({
 
     email: yup
@@ -37,7 +31,7 @@ const validationSchema = yup.object({
 });
 
 
-
+// styles
 const useStyles = makeStyles((theme) => ({
 
     paper: {
@@ -53,32 +47,23 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+
+// LogInComponent
+
 const LogIn = () => {
 
 
-
-
-
-
+    // states
 
     const classes = useStyles();
     const [showPassword, setShowPassword] = useState(false)
     const [loader, setLoader] = useState(false)
 
+   //  use React-rouete hooks 
     const navigate = useNavigate();
 
-    // const didRedirect = (userDatasToken) => {
-
-    //     let userDatas = jwt_decode(userDatasToken)
-    //     console.log("userDatas",userDatas.type);
-    //  if(userDatas?.type === "ADMIN"){
-    //     return <Navigate to="/admin-dashboard" />
-    //  }else{
-    //     return  <Navigate to="/user-dashboard" />
-    //  }
-    // }
-
-
+   
+   // On submit fun
     const formik = useFormik({
         initialValues: {
             email: "",
@@ -94,18 +79,18 @@ const LogIn = () => {
                     setLoader(false);
                     if (!data.data.error) {
                         toast.success("Logged in Successfully")
-                    
+
                         Authenticated(data.data.data.accessToken)
-                        console.log("isAuthenticated()",isAuthenticated());
+                        console.log("isAuthenticated()", isAuthenticated());
                         // didRedirect(isAuthenticated());
                         if (isAuthenticated()?.type === "ADMIN") {
                             // console.log(jwt_decode(data.data.data.accessToken))
-                             console.log("oooo",isAuthenticated()?.type );
+                            console.log("oooo", isAuthenticated()?.type);
                             //  return <Navigate to="/admin-dashboard" replace />
-                             return navigate("/admin-dashboard");
-                          }else{
+                            return navigate("/admin-dashboard");
+                        } else {
                             return navigate("/user-dashboard");
-                          }
+                        }
                     }
                     else {
                         toast.error("User Name and Password are not Matching");
@@ -129,7 +114,7 @@ const LogIn = () => {
             {/* // <ThemeProvider theme={theme}> */}
 
             <Container maxWidth="xs" className={classes.mainCon}>
-                {/* <CssBaseline /> */}
+                <CssBaseline />
                 {/* <Toster /> */}
                 {/* <button onClick={notify}>Notify !</button> */}
                 {loader && <Spinner />}

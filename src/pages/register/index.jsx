@@ -11,6 +11,8 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Spinner from '../../components/loadingSpinner';
 import { SignUp } from '../../auth/helper';
 
+
+// valiction
 const validationSchema = yup.object({
     firstName: yup
         .string()
@@ -53,6 +55,7 @@ const validationSchema = yup.object({
 });
 
 
+// styles
 const theme = createTheme();
 
 const Index = () => {
@@ -96,27 +99,19 @@ const Index = () => {
         }
     });
 
-    // const performRedirect = () => {
-    //    if(didRedirect){
-    //     if()
-    //    }
-    // }
 
 
     return (
         <>
 
             <ThemeProvider theme={theme}>
+                {/* loader */}
                 {loader && <Spinner />}
-                <Container maxWidth="xs"
-                // style = {{
-                //     position: "absolute",top:0,left: 0,Zindex:2,pointerEvents: "none"
-                // }}
-                >
+                {/* loader */}
+                <Container maxWidth="xs">
                     <Box sx={{ marginTop: 8, display: "flex", flexDirection: "column", alignItems: "center" }} >
                         <Avatar sx={{ bgcolor: 'secondary.main', m: 1 }}>
-
-                            <LockIcon />
+                             <LockIcon />
                         </Avatar>
                         <Typography component="h1" variant="h5">
                             Sign up
@@ -262,13 +257,7 @@ const Index = () => {
                                                 name='gender'
                                                 onChange={formik.handleChange}
 
-                                                control={<Radio />} label="Other" />
-                                            {/* <FormControlLabel
-                                                value="disabled"
-                                                disabled
-                                                control={<Radio />}
-                                                label="other"
-                                            /> */}
+                                                control={<Radio />} label="Other" />                             
                                         </RadioGroup>
                                     </FormControl>
                                     <Typography variant='subtitle1: h2' color={"error"} display="block" gutterBottom>{formik.errors.gender}</Typography>
@@ -300,8 +289,7 @@ const Index = () => {
                                             name="checkBox"
                                             color="primary"
                                             checked={formik.values.checkBox}
-                                            onChange={formik.handleChange}
-                                            //   required
+                                            onChange={formik.handleChange}                               
                                             error={Boolean(formik.errors.checkBox)}
                                             helperText={formik.errors.checkBox}
                                         />}
@@ -310,9 +298,7 @@ const Index = () => {
                                         helperText={formik.errors.checkBox}
                                     />
 
-
                                     <Typography variant='subtitle1: h2' color={"error"}>{formik.errors.checkBox}</Typography>
-
 
                                 </Grid>
 

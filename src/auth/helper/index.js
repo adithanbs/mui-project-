@@ -1,8 +1,10 @@
 import axios from 'axios'
 import jwt_decode from "jwt-decode";
 
+// BaseUrl
 const BaseUrl = process.env.REACT_APP_BaseURL
 // console.log("baseUrl",process.env.REACT_APP_BaseURL);
+
 export const SignUp = (data) => {
 
     return axios.post(`${BaseUrl}signup`, data)
