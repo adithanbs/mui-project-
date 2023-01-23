@@ -6,10 +6,11 @@ import LockIcon from '@mui/icons-material/Lock';
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useDispatch, useSelector } from 'react-redux';
-import { setAuthValue } from '../../redux/slicers/auth';
+import { setAuthValue } from '../../redux/slicers/authenticationSlice/auth';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Spinner from '../../components/loadingSpinner';
 import { SignUp } from '../../auth/helper';
+import { userRegister } from '../../redux/slicers/userListSlice';
 
 
 // valiction
@@ -61,13 +62,16 @@ const theme = createTheme();
 const Index = () => {
 
     const { auth } = useSelector(state => state);
+    const { userList } = useSelector(state => state);
+
     const dispatch = useDispatch()
     const [showPassword, setShowPassword] = useState({
         confirmPassword: false,
         password: false
     });
     const [loader, setLoader] = useState(false);
-    console.log("selector", auth);
+    console.log("userList", userList);
+
     const formik = useFormik({
         initialValues: {
             firstName: "",
@@ -81,19 +85,19 @@ const Index = () => {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            setLoader(true)
-            SignUp({ name: values.firstName, gender: values.gender, emailId: values.email, password: values.changepassword, phoneNumber: values.phoneNumber, })
-                .then((data) => {
-                    if (!data.error) {
-                        setLoader(false)
-                    } else {
-                        setLoader(false)
-                    }
-                })
-                .catch((error) => console.log(error))
+            // setLoader(true)
+            // SignUp({ name: values.firstName, gender: values.gender, emailId: values.email, password: values.changepassword, phoneNumber: values.phoneNumber, })
+            //     .then((data) => {
+            //         if (!data.error) {
+            //             setLoader(false)
+            //         } else {
+            //             setLoader(false)
+            //         }
+            //     })
+            //     .catch((error) => console.log(error))
 
-            console.log("values", values);
-            dispatch(setAuthValue(values))
+            // console.log("values", values);
+            dispatch(userRegister(values))
 
 
         }
