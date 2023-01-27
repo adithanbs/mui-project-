@@ -11,6 +11,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Spinner from '../../components/loadingSpinner';
 import { SignUp } from '../../auth/helper';
 import { userRegister } from '../../redux/slicers/userListSlice';
+import { Link } from 'react-router-dom';
 
 
 // valiction
@@ -85,19 +86,19 @@ const Index = () => {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            // setLoader(true)
-            // SignUp({ name: values.firstName, gender: values.gender, emailId: values.email, password: values.changepassword, phoneNumber: values.phoneNumber, })
-            //     .then((data) => {
-            //         if (!data.error) {
-            //             setLoader(false)
-            //         } else {
-            //             setLoader(false)
-            //         }
-            //     })
-            //     .catch((error) => console.log(error))
+            setLoader(true)
+            SignUp({ name: values.firstName, gender: values.gender, emailId: values.email, password: values.changepassword, phoneNumber: values.phoneNumber, })
+                .then((data) => {
+                    if (!data.error) {
+                        setLoader(false)
+                    } else {
+                        setLoader(false)
+                    }
+                })
+                .catch((error) => console.log(error))
 
             // console.log("values", values);
-            dispatch(userRegister(values))
+            // dispatch(userRegister(values))
 
 
         }
@@ -115,7 +116,7 @@ const Index = () => {
                 <Container maxWidth="xs">
                     <Box sx={{ marginTop: 8, display: "flex", flexDirection: "column", alignItems: "center" }} >
                         <Avatar sx={{ bgcolor: 'secondary.main', m: 1 }}>
-                             <LockIcon />
+                            <LockIcon />
                         </Avatar>
                         <Typography component="h1" variant="h5">
                             Sign up
@@ -261,7 +262,7 @@ const Index = () => {
                                                 name='gender'
                                                 onChange={formik.handleChange}
 
-                                                control={<Radio />} label="Other" />                             
+                                                control={<Radio />} label="Other" />
                                         </RadioGroup>
                                     </FormControl>
                                     <Typography variant='subtitle1: h2' color={"error"} display="block" gutterBottom>{formik.errors.gender}</Typography>
@@ -293,7 +294,7 @@ const Index = () => {
                                             name="checkBox"
                                             color="primary"
                                             checked={formik.values.checkBox}
-                                            onChange={formik.handleChange}                               
+                                            onChange={formik.handleChange}
                                             error={Boolean(formik.errors.checkBox)}
                                             helperText={formik.errors.checkBox}
                                         />}
@@ -315,6 +316,14 @@ const Index = () => {
                             >
                                 Sign Up
                             </Button>
+                            <Box component="div" width="100%" sx={{
+                                display: "flex",
+                                justifyContent: "start"
+
+                            }}>
+                                <Link to="/">Already register Please Login</Link>
+                              
+                            </Box>
                         </Box>
                     </Box>
                 </Container>

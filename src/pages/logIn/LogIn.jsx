@@ -10,7 +10,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import { SignIn, Authenticated, isAuthenticated } from '../../auth/helper'
 import Spinner from '../../components/loadingSpinner';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 // valitaction
@@ -52,10 +52,11 @@ const useStyles = makeStyles((theme) => ({
 
 const LogIn = () => {
 
+    const classes = useStyles();
 
     // states
 
-    const classes = useStyles();
+    
     const [showPassword, setShowPassword] = useState(false)
     const [loader, setLoader] = useState(false)
 
@@ -178,7 +179,14 @@ const LogIn = () => {
                             sx={{ mt: 3, mb: 2 }}
                         >Sign In</Button>
                     </Box >
+                      <Box component = "div"  width="100%" sx ={{
+                      display:"flex",  
+                     justifyContent:"space-between"
 
+                      }}>
+                           <Link to = "/sign-up">Please Register</Link>
+                           <Link to = "/forgot-password">Forgot Password </Link>
+                      </Box>
                 </div>
 
             </Container>

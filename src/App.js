@@ -16,6 +16,8 @@ import AdminDashboard from './pages/adminDashboard';
 import UserDashboard from './pages/userDashboard';
 import Error from './components/error-404';
 import UnAuthorized from './components/unauthorizedRoute';
+import ForgotPassword from './pages/forgotPassword';
+import ForgotConfirmPassword from './pages/forgotConfirmPassword';
 
 function App() {
   return (
@@ -29,8 +31,11 @@ function App() {
         <Route exact path='/sign-up'  element = {<Register />}/>
         <Route path='/'  element = {<LogIn />}/>
         <Route path='/unauthorized'  element = {<UnAuthorized />}/>
-        <Route path='/home'  element={<Home />} />
-     
+        <Route path='/home'  element={<Home />} />  
+        <Route path='/forgot-password'  element={<ForgotPassword />} /> 
+        <Route path='/forgot-conform-password'  element={<ForgotConfirmPassword />} /> 
+
+
     
 {/* USER_ROUTE */} 
 
