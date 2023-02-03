@@ -49,3 +49,9 @@ export const isAuthenticated = () => {
         return false
     }
 }
+
+export const forgotPassword = (data) => {
+    return axios.post(`${BaseUrl}forgetpassword`,data)
+    .then((responce) => (responce))
+    .catch(err => console.log(err))
+}

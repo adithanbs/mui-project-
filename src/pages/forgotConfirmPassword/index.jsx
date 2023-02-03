@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { userforgotPasswordConfirm } from '../../redux/slicers/authenticationSlice/auth';
 import { useDispatch, useSelector } from 'react-redux';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { forgotPassword } from '../../auth/helper';
 
 
 
@@ -54,14 +55,15 @@ const ForgotConfirmPassword = () => {
 
 
     // use redux Hooks
-    const {auth}  = useSelector (state => state.auth)
+    const { auth } = useSelector(state => state.auth)
     // console.log("auth",auth);
     // useStyles
     const classes = useStyles();
     //   state
     const [showPassword, setShowPassword] = useState({
         confirmPassword: false,
-        password: false
+        password: false,
+        confirmPasswordKey: ""
     });
 
     const dispatch = useDispatch();
@@ -75,7 +77,16 @@ const ForgotConfirmPassword = () => {
         validationSchema: validationSchema,
         onSubmit: (values) => {
             console.log("values", values);
-            dispatch(userforgotPasswordConfirm({ emailId: values.email }))
+            forgotPassword({ emailId: values.email })
+                .then((data) => {
+                    if (!data.data.error) {
+                        toast.success("valid email please continue")
+                        console.log("responce", data);
+                        setShowPassword({...showPassword,confirmPasswordKey:data})
+                    }
+                  
+                })
+                .catch((err) => console.log(err))
             // setLoader(true);
             // SignIn({ emailId: values.email, password: values.password })
             //     .then((data) => {
