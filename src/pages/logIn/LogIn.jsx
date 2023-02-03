@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import { SignIn, Authenticated, isAuthenticated } from '../../auth/helper'
 import Spinner from '../../components/loadingSpinner';
 import { Link, useNavigate } from "react-router-dom";
+import Todo from '../../components/testExamples/todo';
 
 
 // valitaction
@@ -179,10 +180,10 @@ const LogIn = () => {
                             sx={{ mt: 3, mb: 2 }}
                         >Sign In</Button>
                     </Box >
-                      <Box component = "div"  width="100%" sx ={{
+                      <Box component = "div"  width="100%" 
+                    sx ={{
                       display:"flex",  
                      justifyContent:"space-between"
-
                       }}>
                            <Link to = "/sign-up">Please Register</Link>
                            <Link to = "/forgot-password">Forgot Password </Link>
@@ -190,6 +191,10 @@ const LogIn = () => {
                 </div>
 
             </Container>
+
+            {/* TEST */}
+
+            <Todo />
         </>
         // {/* </ThemeProvider> */}
 
